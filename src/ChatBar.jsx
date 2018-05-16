@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 
 class ChatBar extends Component {
-  handleKeypress(e) {
+  enterMessage(e) {
     if (e.key === "Enter") {
-      console.log(e.target.value)
       this.props.addMessage(e.target.value);
       e.target.value = "";
+    }
+  }
+  changeUsername(e) {
+    if (e.key === "Enter") {
+      console.log(e.target.value)
+      this.props.changeUsername(e.target.value);
     }
   }
   render() {
@@ -14,12 +19,13 @@ class ChatBar extends Component {
         <input
           className="chatbar-username"
           defaultValue={this.props.currentUser.name}
+          onKeyPress={this.changeUsername.bind(this)}
           placeholder="Your Name (Optional)"
         />
         <input
           className="chatbar-message"
           placeholder="Type a message and hit ENTER"
-          onKeyPress={this.handleKeypress.bind(this)}
+          onKeyPress={this.enterMessage.bind(this)}
         />
       </footer>
     );

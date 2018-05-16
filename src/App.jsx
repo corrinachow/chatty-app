@@ -9,6 +9,7 @@ class App extends Component {
       currentUser: { name: "Bob" },
       messages: []
     };
+    this.changeUsername = this.changeUsername.bind(this);
     this.addMessage = this.addMessage.bind(this);
   }
 
@@ -23,12 +24,16 @@ class App extends Component {
     const EVENT_MESSAGE_KEY = "message";
     this.socket.addEventListener(EVENT_MESSAGE_KEY, event => {
       let message = JSON.parse(event.data);
-      console.log(message);
 
       this.setState(previousState => ({
         messages: [...previousState.messages, message]
       }));
     });
+  }
+  changeUsername(username) {
+    const { currentUser } = this.state;
+    const newUsername = { name: username };
+    this.setState({ currentUser: newUsername });
   }
 
   addMessage(message) {
@@ -49,6 +54,7 @@ class App extends Component {
         <ChatBar
           addMessage={this.addMessage}
           currentUser={this.state.currentUser}
+          changeUsername={this.changeUsername}
         />
       </div>
     );
