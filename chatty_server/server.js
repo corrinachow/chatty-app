@@ -27,6 +27,25 @@ function deltaClient(size) {
   return newMessage;
 }
 
+function newClient(size) {
+  const colours = [
+      '#e67e22', // carrot
+      '#2ecc71', // emerald
+      '#3498db', // peter river
+      '#8e44ad', // wisteria
+      '#e74c3c', // alizarin
+      '#1abc9c', // turquoise
+      '#2c3e50', // midnight blue
+    ];
+  const client = {
+    type: 'newClient',
+    id: uuidv1(),
+    name: "Anonymous",
+    colour: colours[size]
+  };
+  return client;
+}
+
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
@@ -41,6 +60,7 @@ wss.on("connection", ws => {
 
   // Sends change in client
   wss.broadcast(JSON.stringify(deltaClient(wss.clients.size)));
+  ws.send(JSON.stringify(newClient(wss.clients.size)));
 
   ws.on("message", function incoming(message) {
     const newMessage = JSON.parse(message);
