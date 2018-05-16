@@ -35,7 +35,6 @@ class App extends Component {
     const { messages, currentUser } = this.state;
 
     const newMessage = {
-      id: messages.length + 1,
       username: currentUser.name,
       content: message
     };
