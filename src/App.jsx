@@ -21,14 +21,14 @@ class App extends Component {
     };
 
     // Listens for new messages
-    const EVENT_MESSAGE_KEY = "message";
-    this.socket.addEventListener(EVENT_MESSAGE_KEY, event => {
-      let message = JSON.parse(event.data);
+    this.socket.onmessage = event => {
+      let data = JSON.parse(event.data);
+      console.log()
 
       this.setState(previousState => ({
-        messages: [...previousState.messages, message]
+        messages: [...previousState.messages, data]
       }));
-    });
+    };
   }
   changeUsername(username) {
     const { currentUser } = this.state;
@@ -43,7 +43,7 @@ class App extends Component {
     const { messages, currentUser } = this.state;
 
     const newMessage = {
-      type: 'postMessage'
+      type: 'postMessage',
       username: currentUser.name,
       content: message
     };
