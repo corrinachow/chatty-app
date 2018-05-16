@@ -7,7 +7,8 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: { name: "Bob" },
-      messages: []
+      messages: [],
+      notifications: []
     };
     this.changeUsername = this.changeUsername.bind(this);
     this.addMessage = this.addMessage.bind(this);
@@ -32,7 +33,7 @@ class App extends Component {
           break;
         case "incomingNotification":
           this.setState(previousState => ({
-            messages: [...previousState.messages, data]
+            notifications: [...previousState.notifications, data]
           }));
           break;
         default:
@@ -70,7 +71,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <MessageList messages={this.state.messages} />
+        <MessageList messages={this.state.messages} notifications={this.state.notifications}/>
         <ChatBar
           addMessage={this.addMessage}
           currentUser={this.state.currentUser}
