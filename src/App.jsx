@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
+import Navbar from "./Navbar.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -8,7 +9,7 @@ class App extends Component {
     this.state = {
       currentUser: { name: "Bob" },
       messages: [],
-      notifications: []
+      activeUsers: 0
     };
     this.changeUsername = this.changeUsername.bind(this);
     this.addMessage = this.addMessage.bind(this);
@@ -33,7 +34,12 @@ class App extends Component {
           break;
         case "incomingNotification":
           this.setState(previousState => ({
-            notifications: [...previousState.notifications, data]
+            messages: [...previousState.messages, data]
+          }));
+          break;
+        case "deltaClient":
+          this.setState(previousState => ({
+            activeUsers: data.clients
           }));
           break;
         default:
@@ -47,9 +53,11 @@ class App extends Component {
     const newUsername = { name: username };
 
     const notification = {
-      type: 'postNotification',
-      content: `${currentUser.name} has changed their name to ${newUsername.name}`
-    }
+      type: "postNotification",
+      content: `${currentUser.name} has changed their name to ${
+        newUsername.name
+      }`
+    };
 
     this.socket.send(JSON.stringify(notification));
 
@@ -71,7 +79,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <MessageList messages={this.state.messages} notifications={this.state.notifications}/>
+        <Navbar users={this.state.activeUsers}/>
+        <MessageList messages={this.state.messages} />
         <ChatBar
           addMessage={this.addMessage}
           currentUser={this.state.currentUser}
