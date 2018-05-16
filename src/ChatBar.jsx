@@ -2,7 +2,8 @@ import React, { Component } from "react";
 
 class ChatBar extends Component {
   handleKeypress(e) {
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
+      console.log(e.target.value)
       this.props.addMessage(e.target.value);
       e.target.value = "";
     }
@@ -18,7 +19,7 @@ class ChatBar extends Component {
         <input
           className="chatbar-message"
           placeholder="Type a message and hit ENTER"
-          onKeyDown={this.handleKeypress.bind(this)}
+          onKeyPress={this.handleKeypress.bind(this)}
         />
       </footer>
     );

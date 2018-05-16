@@ -7,56 +7,40 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: { name: "Bob" },
-      messages: [
-        {
-          id: 1,
-          username: "Bob",
-          content: "Has anyone seen my marbles?"
-        },
-        {
-          id: 2,
-          username: "Anonymous",
-          content:
-            "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      messages: []
     };
-
     this.addMessage = this.addMessage.bind(this);
   }
 
   componentDidMount() {
-    console.log("componentDidMount <App />");
     this.socket = new WebSocket("ws://localhost:3001");
 
     this.socket.onopen = e => {
       console.log("Connected to server");
-
-      // const data = JSON.parse(e.data);
-      // switch (data.type) {
-      //   case "incomingMessage":
-      //     // handle incoming message
-      //     break;
-      //   case "incomingNotification":
-      //     // handle incoming notification
-      //     break;
-      //   default:
-      //     // throw err
-      //     throw new Error("Unknown event type" + data.type);
-      // }
     };
+
+    // Listens for new messages
+    const EVENT_MESSAGE_KEY = "message";
+    this.socket.addEventListener(EVENT_MESSAGE_KEY, event => {
+      let message = JSON.parse(event.data);
+      console.log(message);
+
+      this.setState(previousState => ({
+        messages: [...previousState.messages, message]
+      }));
+    });
   }
 
   addMessage(message) {
     const { messages, currentUser } = this.state;
+
     const newMessage = {
       id: messages.length + 1,
       username: currentUser.name,
       content: message
     };
-    console.log(newMessage)
-    const newMessages = messages.concat(newMessage);
-    this.setState({ messages: newMessages });
+
+    this.socket.send(JSON.stringify(newMessage));
   }
 
   render() {
