@@ -33,6 +33,9 @@ class App extends Component {
   changeUsername(username) {
     const { currentUser } = this.state;
     const newUsername = { name: username };
+
+    this.socket.send(JSON.stringify(newMessage));
+
     this.setState({ currentUser: newUsername });
   }
 
@@ -40,6 +43,7 @@ class App extends Component {
     const { messages, currentUser } = this.state;
 
     const newMessage = {
+      type: 'postMessage'
       username: currentUser.name,
       content: message
     };
