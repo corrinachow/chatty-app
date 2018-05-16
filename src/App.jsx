@@ -29,26 +29,32 @@ class App extends Component {
     console.log("componentDidMount <App />");
     this.socket = new WebSocket("ws://localhost:3001");
 
-    this.socket.onopen = e => P
-    console.log('Connected to server');
+    this.socket.onopen = e => {
+      console.log("Connected to server");
 
-    const data = JSON.parse(e.data);
-    switch(data.type) {
-      case "incomingMessage":
-      // handle incoming message
-      break;
-      case "incomingNotification":
-      // handle incoming notification
-    }
+      // const data = JSON.parse(e.data);
+      // switch (data.type) {
+      //   case "incomingMessage":
+      //     // handle incoming message
+      //     break;
+      //   case "incomingNotification":
+      //     // handle incoming notification
+      //     break;
+      //   default:
+      //     // throw err
+      //     throw new Error("Unknown event type" + data.type);
+      // }
+    };
   }
 
   addMessage(message) {
     const { messages, currentUser } = this.state;
     const newMessage = {
-      id: messages.length,
+      id: messages.length + 1,
       username: currentUser.name,
       content: message
     };
+    console.log(newMessage)
     const newMessages = messages.concat(newMessage);
     this.setState({ messages: newMessages });
   }
