@@ -9,7 +9,6 @@ class ChatBar extends Component {
   }
   changeUsername(e) {
     if (e.key === "Enter") {
-      console.log(e.target.value)
       this.props.changeUsername(e.target.value);
     }
   }
