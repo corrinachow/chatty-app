@@ -7,9 +7,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: { name: "Bob" },
+      currentUser: {},
       messages: [],
-      activeUsers: 0
+      activeUsers: 0,
+      users: []
     };
     this.changeUsername = this.changeUsername.bind(this);
     this.addMessage = this.addMessage.bind(this);
@@ -42,6 +43,11 @@ class App extends Component {
             activeUsers: data.clients
           }));
           break;
+        case "newClient":
+          this.setState(previousState => ({
+            currentUser: data
+          }));
+          break;
         default:
           // show an error in the console if the message type is unknown
           throw new Error("Unknown event type " + data.type);
@@ -50,7 +56,7 @@ class App extends Component {
   }
   changeUsername(username) {
     const { messages, currentUser } = this.state;
-    const newUsername = { name: username };
+    const newUsername = { name: username, colour: currentUser.colour };
 
     const notification = {
       type: "postNotification",
@@ -69,7 +75,8 @@ class App extends Component {
 
     const newMessage = {
       type: "postMessage",
-      username: currentUser.name,
+      username: currentUser,
+      colour: currentUser.colour,
       content: message
     };
 
@@ -79,7 +86,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar users={this.state.activeUsers}/>
+        <Navbar users={this.state.activeUsers} />
         <MessageList messages={this.state.messages} />
         <ChatBar
           addMessage={this.addMessage}
@@ -91,3 +98,5 @@ class App extends Component {
   }
 }
 export default App;
+
+//const colours = ["#26666e", "#f94814", "#820933", "#16C172"];
