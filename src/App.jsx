@@ -23,18 +23,34 @@ class App extends Component {
     // Listens for new messages
     this.socket.onmessage = event => {
       let data = JSON.parse(event.data);
-      console.log()
 
-      this.setState(previousState => ({
-        messages: [...previousState.messages, data]
-      }));
+      switch (data.type) {
+        case "incomingMessage":
+          this.setState(previousState => ({
+            messages: [...previousState.messages, data]
+          }));
+          break;
+        case "incomingNotification":
+          this.setState(previousState => ({
+            messages: [...previousState.messages, data]
+          }));
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + data.type);
+      }
     };
   }
   changeUsername(username) {
-    const { currentUser } = this.state;
+    const { messages, currentUser } = this.state;
     const newUsername = { name: username };
 
-    this.socket.send(JSON.stringify(newMessage));
+    const notification = {
+      type: 'postNotification',
+      content: `${currentUser.name} has changed their name to ${newUsername.name}`
+    }
+
+    this.socket.send(JSON.stringify(notification));
 
     this.setState({ currentUser: newUsername });
   }
@@ -43,7 +59,7 @@ class App extends Component {
     const { messages, currentUser } = this.state;
 
     const newMessage = {
-      type: 'postMessage',
+      type: "postMessage",
       username: currentUser.name,
       content: message
     };
