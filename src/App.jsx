@@ -23,9 +23,12 @@ class App extends Component {
     this.socket.onmessage = event => {
       let data = JSON.parse(event.data);
 
+      console.log(data)
       switch (data.type) {
-        // Handles incoming messages & notifications with same state
-        case 'incomingMessage' || 'incomingNotification':
+
+        // Handles incoming messages and notifications in the same state
+        case 'incomingMessage':
+        case 'incomingNotification':
           this.setState(previousState => ({
             messages: [...previousState.messages, data]
           }));
