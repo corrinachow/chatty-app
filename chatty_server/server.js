@@ -19,6 +19,7 @@ const server = express()
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 
+// Returns new users count
 function deltaClient(size) {
   const newMessage = {
     type: "deltaClient",
@@ -58,14 +59,17 @@ wss.on("connection", ws => {
     });
   };
 
-  // Sends change in client
+  // Sends increase in client quantity
   wss.broadcast(JSON.stringify(deltaClient(wss.clients.size)));
+
+  // Creates new anon user and assigns colour
   ws.send(JSON.stringify(newClient(wss.clients.size)));
 
   ws.on("message", function incoming(message) {
     const newMessage = JSON.parse(message);
     newMessage.id = uuidv1();
 
+    // Handles new posts
     switch (newMessage.type) {
       case "postMessage":
         newMessage.type = "incomingMessage";
@@ -74,7 +78,7 @@ wss.on("connection", ws => {
         newMessage.type = "incomingNotification";
         break;
       default:
-        // show an error in the console if the message type is unknown
+        // Show an error in the console if the message type is unknown
         throw new Error("Unknown event type " + data.type);
     }
 
@@ -83,6 +87,8 @@ wss.on("connection", ws => {
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on("close", () =>
+
+    // Sends quantity when client logs out
     wss.broadcast(JSON.stringify(deltaClient(wss.clients.size)))
   );
 });

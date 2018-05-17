@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import ChatBar from "./ChatBar.jsx";
-import MessageList from "./MessageList.jsx";
-import Navbar from "./Navbar.jsx";
+import React, { Component } from 'react';
+import ChatBar from './ChatBar.jsx';
+import MessageList from './MessageList.jsx';
+import Navbar from './Navbar.jsx';
 
 class App extends Component {
   constructor(props) {
@@ -17,70 +17,65 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.socket = new WebSocket("ws://localhost:3001");
-
-    this.socket.onopen = e => {
-      console.log("Connected to server");
-    };
+    this.socket = new WebSocket('ws://localhost:3001');
 
     // Listens for new messages
     this.socket.onmessage = event => {
       let data = JSON.parse(event.data);
 
       switch (data.type) {
-        case "incomingMessage":
+        // Handles incoming messages & notifications with same state
+        case 'incomingMessage' || 'incomingNotification':
           this.setState(previousState => ({
             messages: [...previousState.messages, data]
           }));
           break;
-        case "incomingNotification":
-          this.setState(previousState => ({
-            messages: [...previousState.messages, data]
-          }));
-          break;
-        case "deltaClient":
-          this.setState(previousState => ({
+        case 'deltaClient':
+          this.setState(() => ({
             activeUsers: data.clients
           }));
           break;
-        case "newClient":
-          this.setState(previousState => ({
+
+        // Sets currentUser
+        case 'newClient':
+          this.setState(() => ({
             currentUser: data
           }));
           break;
         default:
           // show an error in the console if the message type is unknown
-          throw new Error("Unknown event type " + data.type);
+          throw new Error('Unknown event type ' + data.type);
       }
     };
   }
-  changeUsername(username) {
-    const { messages, currentUser } = this.state;
-    const newUsername = { name: username, colour: currentUser.colour };
 
-    const notification = {
-      type: "postNotification",
-      content: `${currentUser.name} has changed their name to ${
-        newUsername.name
-      }`
-    };
-
-    this.socket.send(JSON.stringify(notification));
-
-    this.setState({ currentUser: newUsername });
+  changeUsername(e) {
+    if (e.key === 'Enter') {
+      const { currentUser } = this.state;
+      const newUsername = { name: e.target.value, colour: currentUser.colour };
+      const notification = {
+        type: 'postNotification',
+        content: `${currentUser.name} has changed their name to ${
+          newUsername.name
+        }`
+      };
+      this.socket.send(JSON.stringify(notification));
+      this.setState({ currentUser: newUsername });
+    }
   }
 
-  addMessage(message) {
-    const { messages, currentUser } = this.state;
-
-    const newMessage = {
-      type: "postMessage",
-      username: currentUser,
-      colour: currentUser.colour,
-      content: message
-    };
-
-    this.socket.send(JSON.stringify(newMessage));
+  addMessage(e) {
+    if (e.key === 'Enter') {
+      const { currentUser } = this.state;
+      const newMessage = {
+        type: 'postMessage',
+        username: currentUser,
+        colour: currentUser.colour,
+        content: e.target.value
+      };
+      this.socket.send(JSON.stringify(newMessage));
+      e.target.value = '';
+    }
   }
 
   render() {
@@ -97,6 +92,5 @@ class App extends Component {
     );
   }
 }
-export default App;
 
-//const colours = ["#26666e", "#f94814", "#820933", "#16C172"];
+export default App;
