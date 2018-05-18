@@ -74,8 +74,15 @@ class App extends Component {
         type: 'postMessage',
         username: currentUser,
         colour: currentUser.colour,
-        content: e.target.value
+        content: e.target.value,
       };
+
+      // Search for .gif|.png|.jpg
+      const imgUrl = e.target.value.match(/(https?:\/\/.*\.(?:png|jpg|gif))/i);
+      if (imgUrl){
+        newMessage.img_url = imgUrl[0];
+        newMessage.content = e.target.value.replace(imgUrl[0], '');
+      }
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = '';
     }
