@@ -23,9 +23,7 @@ class App extends Component {
     this.socket.onmessage = event => {
       let data = JSON.parse(event.data);
 
-      console.log(data)
       switch (data.type) {
-
         // Handles incoming messages and notifications in the same state
         case 'incomingMessage':
         case 'incomingNotification':
@@ -74,7 +72,7 @@ class App extends Component {
         type: 'postMessage',
         username: currentUser,
         colour: currentUser.colour,
-        content: e.target.value
+        content: e.target.value,
       };
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = '';
