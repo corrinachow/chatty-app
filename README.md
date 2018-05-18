@@ -1,6 +1,6 @@
 # Chatty App
 
-Chatty App is a single page app built with React.JS that allows connected users to send messages either anonymously or under a chosen pseudonym.
+Chatty App is a single page app built with React.JS that allows connected users to send messages either anonymously or under a chosen pseudonym.  Users can also isert multiple image urls which will render in the chat box.
 
 ## Final Product
 
