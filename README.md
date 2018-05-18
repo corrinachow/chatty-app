@@ -6,7 +6,7 @@ Chatty App is a single page app built with React.JS that allows connected users 
 
 ![Real-time chat](./build/docs/real-time-chat.png)
 
-Two users communicating in real-time.
+Several users communicating in real-time.
 
 ## Getting Started
 
